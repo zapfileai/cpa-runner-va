@@ -42,12 +42,9 @@ const escapeCSV = (val) => {
   if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
 
   for (const city of cities) {
+    // TEST: just one search query
     const searchQueries = [
       `CPA in ${city} ${STATE_NAME}`,
-      `Accountant in ${city} ${STATE_NAME}`,
-      `CPA firm in ${city} ${STATE_NAME}`,
-      `Certified Public Accountant ${city} ${STATE_NAME}`,
-      `Tax accountant in ${city} ${STATE_NAME}`
     ];
 
     const filePath = `${outputDir}/${city.replace(/\s+/g, '_')}_CPA.csv`;
@@ -82,7 +79,7 @@ const escapeCSV = (val) => {
         continue;
       }
 
-      for (let i = 0; i < 15; i++) {
+      for (let i = 0; i < 3; i++) {
         await scrollable.evaluate(el => el.scrollBy(0, 1000));
         await page.waitForTimeout(2000);
       }
@@ -117,6 +114,9 @@ const escapeCSV = (val) => {
           const row = [website, name, addressText, parsedCity, parsedState, phone].map(escapeCSV).join(',');
           console.log(`Found: ${website}`);
           fs.appendFileSync(filePath, row + '\n');
+
+          // TEST: stop after first URL
+          break;
 
         } catch (err) {
           console.log("Error processing listing:", err.message);
